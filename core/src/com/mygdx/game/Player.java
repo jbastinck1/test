@@ -34,7 +34,6 @@ public class Player extends GameObject {
 	}
 
 	public void tick() {
-        System.out.println("kms");
         if (HUD.HEALTH > 0) { //checks if the player is alive
             x += velX;
             y += velY;
@@ -136,7 +135,6 @@ public class Player extends GameObject {
 	public void render(SpriteBatch g) {
 		if (id == ID.Player) {
             this.tick();
-			System.out.println("kys");
 			g.draw(img, (int) x, (int) y, 32, 32);
 		}
 	}

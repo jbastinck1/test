@@ -22,6 +22,11 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 	private Handler handler;
 	public State GameState;
 	private KeyInput controls;
+	Texture missile;
+	Texture movebuttonup;
+	Texture movebuttondown;
+	Texture movebuttonleft;
+	Texture movebuttonright;
 
 	@Override
 	public void create() {
@@ -30,7 +35,11 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 		controls = new KeyInput(handler);
 		GameState = State.Menu;
 		img = new Texture("enemyrobot.png");
-
+		missile = new Texture("missile.png");
+		movebuttonup = new Texture("movebutton.png");
+		movebuttonleft = new Texture("movebuttonL.png");
+		movebuttondown = new Texture("movebuttonD.png");
+		movebuttonright = new Texture("movebuttonR.png");
 	}
 
 	public static float clamp(float var, float min, float max){
@@ -55,11 +64,12 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 
 		if(GameState == State.Game){
 			handler.render(batch);
+			batch.draw(missile, 1640, 0, 160, 160);
+			batch.draw(movebuttonright, 320, 0, 160, 160);
+			batch.draw(movebuttonleft, 0, 0, 160, 160);
+			batch.draw(movebuttonup, 160, 160, 160, 160);
+			batch.draw(movebuttondown, 160, 0, 160, 160);
 			batch.end();
-			sr.begin(ShapeRenderer.ShapeType.Filled);
-			sr.setColor(Color.WHITE);
-			sr.rect(0,0,280,120);
-			sr.end();
 		}else if (GameState == State.Menu) {
 			font.setColor(Color.WHITE);
 			font.draw(batch, "Play", 915, 740);
@@ -153,11 +163,11 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		if (GameState == State.Game){
-			Rectangle left = new Rectangle(0,960, 120, 120);
-			Rectangle right = new Rectangle(240,960, 120, 120);
-			Rectangle up = new Rectangle(120,840, 120, 120);
-			Rectangle down = new Rectangle(120,960, 120, 120);
-			Rectangle shoot = new Rectangle(0,840, 120, 120);
+			Rectangle left = new Rectangle(0,920, 160, 160);
+			Rectangle right = new Rectangle(320,920, 160, 160);
+			Rectangle up = new Rectangle(160,760, 160, 160);
+			Rectangle down = new Rectangle(160,920, 160, 160);
+			Rectangle shoot = new Rectangle(1640,920, 160, 160);
 			for (int i = 0; i < handler.object.size(); i++){
 				GameObject tempObject = handler.object.get(i);
 				if(tempObject.getId() == ID.Player){
