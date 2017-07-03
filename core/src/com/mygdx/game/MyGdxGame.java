@@ -18,17 +18,29 @@ import java.awt.peer.SystemTrayPeer;
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	Texture img;
-	String state = "Menu";
-	private Handler handler = new Handler();
+//	String state = "Menu";
+	private Handler handler;
+	public State GameState;
+	private KeyInput controls;
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-
+		handler = new Handler();
+		controls = new KeyInput(handler);
+		GameState = State.Menu;
 		img = new Texture("enemyrobot.png");
 
 	}
 
+	public static float clamp(float var, float min, float max){
+		if (var >= max)
+			return var = max;
+		else if (var <= min)
+			return var = min;
+		else
+			return var;
+	}
 
 	@Override
 	public void render() {
@@ -41,10 +53,14 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 		font.setColor(Color.WHITE);
 		ShapeRenderer sr = new ShapeRenderer();
 
-		if(state == "Game"){
+		if(GameState == State.Game){
 			handler.render(batch);
 			batch.end();
-		}else if (state == "Menu") {
+			sr.begin(ShapeRenderer.ShapeType.Filled);
+			sr.setColor(Color.WHITE);
+			sr.rect(0,0,280,120);
+			sr.end();
+		}else if (GameState == State.Menu) {
 			font.setColor(Color.WHITE);
 			font.draw(batch, "Play", 915, 740);
 			font.draw(batch, "Help", 915, 490);
@@ -58,7 +74,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			sr.rect(850, 400, 280, 120);
 			sr.rect(850, 650, 280, 120);
 			sr.end();
-		} else if (state == "Help") {
+		} else if (GameState == State.Help) {
 			font.draw(batch, "Help", 915, 1000);
 			font.draw(batch, "Go to menu", 795, 240);
 			batch.end();
@@ -66,7 +82,7 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			sr.setColor(Color.WHITE);
 			sr.rect(750, 150, 480, 120);
 			sr.end();
-		} else if (state == "End") {
+		} else if (GameState == State.End) {
 			font.draw(batch, "GAME OVER", 780, 1000);
 			font.draw(batch, "Your score is: " + 1000, 700, 620);
 			font.draw(batch, "Go to menu", 795, 240);
@@ -136,37 +152,57 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-
-		if (state == "Menu") {
+		if (GameState == State.Game){
+			Rectangle left = new Rectangle(0,960, 120, 120);
+			Rectangle right = new Rectangle(240,960, 120, 120);
+			Rectangle up = new Rectangle(120,840, 120, 120);
+			Rectangle down = new Rectangle(120,960, 120, 120);
+			Rectangle shoot = new Rectangle(0,840, 120, 120);
+			for (int i = 0; i < handler.object.size(); i++){
+				GameObject tempObject = handler.object.get(i);
+				if(tempObject.getId() == ID.Player){
+					if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+						if(left.contains(Gdx.input.getX(), Gdx.input.getY())){
+							tempObject.setVelX(-5);}
+						if(right.contains(Gdx.input.getX(), Gdx.input.getY())){
+							tempObject.setVelX(5);}
+						if(up.contains(Gdx.input.getX(), Gdx.input.getY())){
+							tempObject.setVelY(5);}
+						if(down.contains(Gdx.input.getX(), Gdx.input.getY())){
+							tempObject.setVelY(-5);}
+						if(shoot.contains(Gdx.input.getX(), Gdx.input.getY())){
+							handler.addObject(new Projectile(tempObject.getX(),tempObject.getY(),ID.Projectile, handler,tempObject.getFacing() * 15,tempObject.getGoingUP()* 15));}
+					}		}}}
+		if (GameState == State.Menu) {
 			Rectangle start = new Rectangle(850, 310, 280, 120);
 			Rectangle exit = new Rectangle(850, 810, 280, 120);
 			Rectangle help = new Rectangle(850, 560, 280, 120);
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 				if(start.contains(Gdx.input.getX(), Gdx.input.getY())){
-					System.out.println("start pressed");
-					handler.addObject(new Player(1980/2-32,1080/2-32, ID.Player, handler));
-					state = "Game";}
+					handler.addObject(new Player(1980/2-32,1080/2-32, ID.Player, handler, this	));
+					GameState = State.Game;}
 				if (exit.contains(Gdx.input.getX(), Gdx.input.getY())) {
 					System.exit(1);
 				}
 				if (help.contains(Gdx.input.getX(), Gdx.input.getY())) {
-					state = "Help";
+					GameState = State.Help;
 				}
 
 
 		}}
 
-		if (state == "Help") {
+
+		if (GameState == State.Help) {
 			Rectangle back1 = new Rectangle(750, 810, 480, 120);
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 				if (back1.contains(Gdx.input.getX(), Gdx.input.getY())) {
-					state = "Menu";
+					GameState = State.Menu;
 				}
 			}
-			if (state == "End") {
+			if (GameState == State.End) {
 				Rectangle back2 = new Rectangle(750, 810, 480, 120);
 				if (back2.contains(Gdx.input.getX(), Gdx.input.getY())) {
-					state = "Menu";
+					GameState = State.Menu;
 				}
 			}
 
@@ -179,6 +215,14 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if(button == Input.Buttons.LEFT){
+			for (int i = 0; i < handler.object.size(); i++){
+				GameObject tempObject = handler.object.get(i);
+				if(tempObject.getId() == ID.Player){
+					tempObject.setVelY(0);
+					tempObject.setVelX(0);
+				}}
+		}
 		return false;
 	}
 
