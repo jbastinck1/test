@@ -3,7 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,33 +12,55 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
-import java.awt.peer.SystemTrayPeer;
-
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	Texture img;
+	Texture img2;
 //	String state = "Menu";
 	private Handler handler;
 	public State GameState;
 	private KeyInput controls;
 	Texture missile;
+	private HUD hud;
 	Texture movebuttonup;
 	Texture movebuttondown;
 	Texture movebuttonleft;
 	Texture movebuttonright;
+    public BasicEnemy be;
+    public SmartEnemy sm;
+    private Spawn spawn;
+
+	public MyGdxGame(){
+		this.spawn = new Spawn(this.handler, this.hud, this);
+        this.handler = new Handler();
+		this.hud = new HUD();
+
+
+	}
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
 		handler = new Handler();
+		hud = new HUD();
+		spawn = new Spawn(handler,hud,this);
 		controls = new KeyInput(handler);
 		GameState = State.Menu;
 		img = new Texture("enemyrobot.png");
+		img2 = new Texture("Smart_enemy.png");
 		missile = new Texture("missile.png");
 		movebuttonup = new Texture("movebutton.png");
 		movebuttonleft = new Texture("movebuttonL.png");
 		movebuttondown = new Texture("movebuttonD.png");
 		movebuttonright = new Texture("movebuttonR.png");
+
+	}
+
+	public void tick(){
+		handler.tick();
+		hud.tick();
+		spawn.tick();
+
 	}
 
 	public static float clamp(float var, float min, float max){
@@ -57,6 +78,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		Gdx.input.setInputProcessor(this);
 		batch.begin();
+
+		this.tick();
 		BitmapFont font = new BitmapFont();
 		font.getData().setScale(5);
 		font.setColor(Color.WHITE);
@@ -64,6 +87,8 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 
 		if(GameState == State.Game){
 			handler.render(batch);
+			hud.render(batch);
+			spawn.tick();
 			batch.draw(missile, 1640, 0, 160, 160);
 			batch.draw(movebuttonright, 320, 0, 160, 160);
 			batch.draw(movebuttonleft, 0, 0, 160, 160);
@@ -101,6 +126,38 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			sr.setColor(Color.WHITE);
 			sr.rect(750, 150, 480, 120);
 			sr.end();
+
+
+//            public void run() {
+//                this.requestFocus();
+//                long lastTime = System.nanoTime();
+//                double amountOfTicks = 60.0D;
+//                double ns = 1.0E9D / amountOfTicks;
+//                double delta = 0.0D;
+//                long timer = System.currentTimeMillis();
+//                int var11 = 0;
+//
+//                while(this.running) {
+//                    long now = System.nanoTime();
+//                    delta += (double)(now - lastTime) / ns;
+//
+//                    for(lastTime = now; delta >= 1.0D; --delta) {
+//                        this.tick();
+//                    }
+//
+//                    if(this.running) {
+//                        this.render();
+//                    }
+//
+//                    ++var11;
+//                    if(System.currentTimeMillis() - timer > 1000L) {
+//                        timer += 1000L;
+//                        var11 = 0;
+//                    }
+//                }
+//
+//                this.stop();
+//            }
 //		ShapeRenderer sr = new ShapeRenderer();
 //
 //		batch.begin();
@@ -173,15 +230,15 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 				if(tempObject.getId() == ID.Player){
 					if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 						if(left.contains(Gdx.input.getX(), Gdx.input.getY())){
-							tempObject.setVelX(-5);}
+							tempObject.setVelX(-10);}
 						if(right.contains(Gdx.input.getX(), Gdx.input.getY())){
-							tempObject.setVelX(5);}
+							tempObject.setVelX(10);}
 						if(up.contains(Gdx.input.getX(), Gdx.input.getY())){
-							tempObject.setVelY(5);}
+							tempObject.setVelY(10);}
 						if(down.contains(Gdx.input.getX(), Gdx.input.getY())){
-							tempObject.setVelY(-5);}
+							tempObject.setVelY(-10);}
 						if(shoot.contains(Gdx.input.getX(), Gdx.input.getY())){
-							handler.addObject(new Projectile(tempObject.getX(),tempObject.getY(),ID.Projectile, handler,tempObject.getFacing() * 15,tempObject.getGoingUP()* 15));}
+							handler.addObject(new Projectile(tempObject.getX(),tempObject.getY(), ID.Projectile, handler,tempObject.getFacing() * 15,tempObject.getGoingUP()* 15));}
 					}		}}}
 		if (GameState == State.Menu) {
 			Rectangle start = new Rectangle(850, 310, 280, 120);
@@ -190,6 +247,10 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
 				if(start.contains(Gdx.input.getX(), Gdx.input.getY())){
 					handler.addObject(new Player(1980/2-32,1080/2-32, ID.Player, handler, this	));
+					handler.addObject(new SmartEnemy(200,400, ID.SmartEnemy,	handler));
+					handler.addObject(new BasicEnemy(300,500, ID.BasicEnemy,	handler));
+					handler.addObject(new BasicEnemy(200,600, ID.BasicEnemy,handler));
+					handler.addObject(new BasicEnemy(200,100, ID.BasicEnemy,handler));
 					GameState = State.Game;}
 				if (exit.contains(Gdx.input.getX(), Gdx.input.getY())) {
 					System.exit(1);

@@ -30,7 +30,7 @@ public class Player extends GameObject {
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int)x, (int)y, 32, 32);
+		return new Rectangle((int)x, (int)y, 50, 50);
 	}
 
 	public void tick() {
@@ -95,34 +95,18 @@ public class Player extends GameObject {
 
             GameObject tempObject = handler.object.get(i);
             if (tempObject.getId() == ID.BasicEnemy || tempObject.getId() == ID.HealingEnemy) {
-                if (getBounds().contains(tempObject.getBounds())) {
+                if (getBounds().overlaps(tempObject.getBounds())) {
                     HUD.HEALTH -= 2;
                 }
             }
             if (tempObject.getId() == ID.MineEnemy) {
-                if (getBounds().contains(tempObject.getBounds())) {
+                if (getBounds().overlaps(tempObject.getBounds())) {
                     HUD.HEALTH -= 100;
                 }
             }
-//            else if (tempObject.getId() == ID.BasicHealth) {
-//                if (getBounds().intersects(tempObject.getBounds())) {
-//                    HUD.HEALTH += 2;
-//                    handler.removeObject(tempObject);
-//                }
-//            }
-//            else if (tempObject.getId() == ID.FastEnemy) {
-//                if (getBounds().intersects(tempObject.getBounds())) {
-//                    HUD.HEALTH -= 3;
-//                }
-//            }
-
-			if (tempObject.getId() == ID.BasicEnemy || tempObject.getId() == ID.HealingEnemy) {
-				if (getBounds().contains(tempObject.getBounds())) {
-					HUD.HEALTH -= 2;
-				}
-			}
+//
 			if (tempObject.getId() == ID.SmartEnemy) {
-				if (getBounds().contains(tempObject.getBounds())) {
+				if (getBounds().overlaps(tempObject.getBounds())) {
 					HUD.HEALTH -= 4;
 				}
 			}
@@ -135,7 +119,7 @@ public class Player extends GameObject {
 	public void render(SpriteBatch g) {
 		if (id == ID.Player) {
             this.tick();
-			g.draw(img, (int) x, (int) y, 32, 32);
+			g.draw(img, (int) x, (int) y, 50, 50);
 		}
 	}
 
