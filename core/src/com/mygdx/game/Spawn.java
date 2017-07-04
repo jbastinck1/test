@@ -12,12 +12,14 @@ public class Spawn {
     private int delay = 0;
     private int levelspawner = 0;
     private MyGdxGame game;
+    public boolean levelup;
 
 
     public Spawn(Handler handler, HUD hud, MyGdxGame game) {
         this.handler = handler;
         this.hud = hud;
         this.game = game;
+        this.levelup = false;
     }
 
     public void tick(){
@@ -25,12 +27,14 @@ public class Spawn {
         System.out.println("delay is" + delay);
         System.out.println("scorekeep" + scoreKeep);
         if (scoreKeep == 210) {
+            levelup = true;
             scoreKeep += 10;
             delay = 0;
             hud.setLevel(hud.getLevel() + 1);
             levelspawner += 2;
             System.out.println("levelspawner" + levelspawner);}
         if (levelspawner == 2 && delay >= 200) {
+            levelup = false;
             handler.addObject(new BasicEnemy(100, 100, ID.BasicEnemy, handler));
             handler.addObject(new SmartEnemy(230, 300, ID.SmartEnemy, handler));
             handler.addObject(new SmartEnemy(300, 400, ID.SmartEnemy, handler));
@@ -40,13 +44,14 @@ public class Spawn {
         }
 
         else if(scoreKeep ==450){
+            levelup = true;
             scoreKeep +=10;
             delay= 0;
             hud.setLevel(hud.getLevel() + 1);
             levelspawner += 3;
             System.out.println("levelspawner" + levelspawner);}
         if(levelspawner == 3 && delay >=200)
-        {
+        {   levelup = false;
             handler.addObject(new BasicEnemy(100,100,ID.BasicEnemy,handler));
             handler.addObject(new BasicEnemy(400,120,ID.BasicEnemy,handler));
             handler.addObject(new SmartEnemy(300,400,ID.SmartEnemy,handler));
@@ -57,13 +62,14 @@ public class Spawn {
         }
 
         else if(scoreKeep == 680){
+            levelup = true;
             scoreKeep += 10;
             delay = 0;
             hud.setLevel(hud.getLevel() + 1);
             levelspawner += 4;
             System.out.println("levelspawner" + levelspawner);}
         if(levelspawner == 4 && delay >= 200)
-        {
+        {   levelup = false;
             handler.addObject(new BasicEnemy(100,100,ID.BasicEnemy,handler));
             handler.addObject(new BasicEnemy(400,120,ID.BasicEnemy,handler));
             handler.addObject(new SmartEnemy(300,400,ID.SmartEnemy,handler));

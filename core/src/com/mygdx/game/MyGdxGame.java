@@ -16,7 +16,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 	SpriteBatch batch;
 	Texture img;
 	Texture img2;
-//	String state = "Menu";
+	Texture img3;
+	Texture img4;
+	Texture img5;
 	private Handler handler;
 	public State GameState;
 	private KeyInput controls;
@@ -48,6 +50,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 		GameState = State.Menu;
 		img = new Texture("enemyrobot.png");
 		img2 = new Texture("Smart_enemy.png");
+		img3 = new Texture("mine.png");
+		img4 = new Texture("healrobot.png");
+		img5 = new Texture("robot.png");
 		missile = new Texture("missile.png");
 		movebuttonup = new Texture("movebutton.png");
 		movebuttonleft = new Texture("movebuttonL.png");
@@ -94,6 +99,9 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			batch.draw(movebuttonleft, 0, 0, 160, 160);
 			batch.draw(movebuttonup, 160, 160, 160, 160);
 			batch.draw(movebuttondown, 160, 0, 160, 160);
+			if(spawn.levelup){
+				font.draw(batch,"Level up", 800, 750);
+			}
 			batch.end();
 		}else if (GameState == State.Menu) {
 			font.setColor(Color.WHITE);
@@ -110,8 +118,26 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			sr.rect(850, 650, 280, 120);
 			sr.end();
 		} else if (GameState == State.Help) {
-			font.draw(batch, "Help", 915, 1000);
+			font.draw(batch, "Help", 915, 1080);
 			font.draw(batch, "Go to menu", 795, 240);
+			font.draw(batch, "Move", 150, 880);
+			font.draw(batch,"Player",150,755);
+			font.draw(batch,"Shoot",550,880);
+			font.draw(batch,"Touch: take damage over time.",600,780);
+			font.draw(batch,"Hit 3 times to kill.",600,710);
+			font.draw(batch,"Touch: take damage over time.",150,610);
+			font.draw(batch,"Hit 1 time to kill and get 10 health.",150,550);
+			font.draw(batch,"Touch: take damage over time.",150,430);
+			font.draw(batch,"Hit 3 times to kill.",150,370);
+			font.draw(batch,"Touch: instant death.",950,930);
+			font.draw(batch,"Hit 1 time to kill.",950,870);
+			batch.draw(movebuttonup,0,830,100,100);
+			batch.draw(missile,400,830,100,100);
+			batch.draw(img,450,680,100,100);
+			batch.draw(img2,0,330,100,100);
+			batch.draw(img3,800,830,100,100);
+			batch.draw(img4,0,530,100,100);
+			batch.draw(img5,0,680,100,100);
 			batch.end();
 			sr.begin(ShapeRenderer.ShapeType.Line);
 			sr.setColor(Color.WHITE);
@@ -127,71 +153,6 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 			sr.rect(750, 150, 480, 120);
 			sr.end();
 
-
-//            public void run() {
-//                this.requestFocus();
-//                long lastTime = System.nanoTime();
-//                double amountOfTicks = 60.0D;
-//                double ns = 1.0E9D / amountOfTicks;
-//                double delta = 0.0D;
-//                long timer = System.currentTimeMillis();
-//                int var11 = 0;
-//
-//                while(this.running) {
-//                    long now = System.nanoTime();
-//                    delta += (double)(now - lastTime) / ns;
-//
-//                    for(lastTime = now; delta >= 1.0D; --delta) {
-//                        this.tick();
-//                    }
-//
-//                    if(this.running) {
-//                        this.render();
-//                    }
-//
-//                    ++var11;
-//                    if(System.currentTimeMillis() - timer > 1000L) {
-//                        timer += 1000L;
-//                        var11 = 0;
-//                    }
-//                }
-//
-//                this.stop();
-//            }
-//		ShapeRenderer sr = new ShapeRenderer();
-//
-//		batch.begin();
-//		BitmapFont font = new BitmapFont();
-//		font.getData().setScale(5);
-//		font.setColor(Color.WHITE);
-//		Rectangle rect = new Rectangle(850,810,280,120);
-//		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-//			if(rect.contains(Gdx.input.getX(), Gdx.input.getY())){
-//			System.exit(1);
-//		}}
-//		sr.begin(ShapeRenderer.ShapeType.Line);
-//		sr.setColor(Color.WHITE);
-//		sr.rect(850,150,280,120);
-//		sr.rect(850,400,280,120);
-//		sr.rect(850,650,280,120);
-//		sr.end();
-//		batch.begin();
-//		font.draw(batch,"Menu", 900, 1000);
-//
-//		font.draw(batch,"Play",915,740);
-//		font.draw(batch,"Help",915,490);
-//		font.draw(batch,"Quit",915,240);
-//		font.draw(batch,"GAME OVER", 780,1000);
-//		font.draw(batch, "Your score is: " + 1000, 700,620);
-//		font.draw(batch,"Go to menu", 795,240);
-//		batch.end();
-//		sr.begin(ShapeRenderer.ShapeType.Line);
-//		sr.setColor(Color.WHITE);
-//		sr.rect(750,150,480,120);
-//		sr.end();
-//		batch.begin();
-
-//		batch.end();
 
 		}
 	}
@@ -269,15 +230,17 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
 				if (back1.contains(Gdx.input.getX(), Gdx.input.getY())) {
 					GameState = State.Menu;
 				}
-			}
-			if (GameState == State.End) {
-				Rectangle back2 = new Rectangle(750, 810, 480, 120);
-				if (back2.contains(Gdx.input.getX(), Gdx.input.getY())) {
-					GameState = State.Menu;
+			}}
+		if (GameState == State.End) {
+			Rectangle back2 = new Rectangle(750, 810, 480, 120);
+			if (back2.contains(Gdx.input.getX(), Gdx.input.getY())) {
+				GameState = State.Menu;
 				}
 			}
 
-		}
+
+
+
 
 
 		return true;
