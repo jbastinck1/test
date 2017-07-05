@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
+	private static MyGdxGame _instance = null;
 	SpriteBatch batch;
 	Texture img;
 	Texture img2;
@@ -32,13 +33,20 @@ public class MyGdxGame extends ApplicationAdapter implements InputProcessor{
     public SmartEnemy sm;
     private Spawn spawn;
 
-	public MyGdxGame(){
+	private MyGdxGame(){
 		this.spawn = new Spawn(this.handler, this.hud, this);
         this.handler = new Handler();
 		this.hud = new HUD();
 
 
 	}
+    private synchronized static void createInstance () {
+        if (_instance == null) _instance = new MyGdxGame();
+    }
+    public static MyGdxGame getInstance () {
+        if (_instance == null) createInstance ();
+        return _instance;
+    }
 
 	@Override
 	public void create() {
