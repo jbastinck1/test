@@ -2,7 +2,7 @@ package com.mygdx.game;
 
 
 /**
- * Created by Karan on 3-7-2017.
+ * Spawn class which is used to spawn new enemies when all of them are dead and differentiate between levels
  */
 
 public class Spawn {
@@ -14,14 +14,22 @@ public class Spawn {
     private MyGdxGame game;
     public boolean levelup;
 
-
+    /**
+     * Method which creates an instance of Spawn
+     *
+     * @param handler Instance of Handler class which is used to add new GameObjects to the handler
+     * @param hud     Instance of HUD class which is used to check and update the current level
+     * @param game    Instance of Game class which is used to change the GameState to end if all levels have been beaten
+     */
     public Spawn(Handler handler, HUD hud, MyGdxGame game) {
         this.handler = handler;
         this.hud = hud;
         this.game = game;
         this.levelup = false;
     }
-
+    /**
+     * Method which checks the total score the player has and uses it to change between levels
+     */
     public void tick(){
         delay++;
         System.out.println("delay is" + delay);

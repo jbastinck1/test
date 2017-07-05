@@ -9,7 +9,8 @@ import java.io.PrintStream;
 
 
 /**
- * Created by Steven on 16-Jun-17.
+ * HealingEnemy class which extends GameObject and has all the additional implementation
+ * for the methods that are needed to have it interact with other GameObjects.
  */
 public class Projectile extends GameObject {
     private Handler handler;
@@ -17,6 +18,16 @@ public class Projectile extends GameObject {
     private float velY;
     Spawn p;
 
+    /**
+     * Instantiate a new instance of projectile.
+     *
+     * @param x       X coordinate of the class
+     * @param y       Y coordinate of the class
+     * @param id      Type of GameObject
+     * @param handler Instance of Handler class which loops through all GameObjects
+     * @param velX    Horizontal velocity of the class
+     * @param velY    Vertical velocity of the class
+     */
     public Projectile(float x, float y, ID id, Handler handler, float velX, float velY) {
         super(x, y, id);
         this.handler = handler;
@@ -24,10 +35,18 @@ public class Projectile extends GameObject {
         this.velY = velY;
     }
 
+    /**
+     * Creates a hitbox that allows the program to check when it gets touched by other objects
+     *
+     * @return Returns a Rectangle at the position of the object that's also the size of the object
+     */
     public Rectangle getBounds() {
         return new Rectangle((int) x, (int) y, 16, 16);
     }
 
+    /**
+     * Method which updates all the data of the class
+     */
     public void tick() {
         x += velX;
         y += velY;
@@ -38,6 +57,11 @@ public class Projectile extends GameObject {
         collision();
     }
 
+    /**
+     * Draws the image of the class on the given instance of Graphics
+     *
+     * @param g Instance of SpriteBatch originating from the Game class
+     */
     public void render(SpriteBatch g) {
         tick();
         g.end();
@@ -49,6 +73,9 @@ public class Projectile extends GameObject {
         g.begin();
     }
 
+    /**
+     * Uses the getBounds method to check if the object is being touched by other GameObjects
+     */
     private void collision() {
         for (int i = 0; i < this.handler.object.size(); ++i) {
             GameObject tempObject = (GameObject) this.handler.object.get(i);

@@ -6,33 +6,38 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
- * Created by Steven on 23-4-2016.
+ * Player class which extends GameObject and has all the additional implementation
+ * for the methods that are needed to have it interact with other GameObjects.
  */
 public class Player extends GameObject {
 	Handler handler;
     MyGdxGame game;
-//	Game game;
     private Texture img = new Texture("robot.png");
-
+    /**
+     * Instantiate a new instance of player.
+     *
+     * @param x       X coordinate of the class
+     * @param y       Y coordinate of the class
+     * @param id      Type of GameObject
+     * @param handler Instance of Handler class which loops through all GameObjects
+     * @param game    Instance of MyGdxGame class used to change the GameState if the player dies
+     */
 	public Player(int x, int y, ID id, Handler handler, MyGdxGame game) {
 		super(x, y, id);
 		this.handler = handler;
 		this.game = game;
-//		try {
-//			// Grab the InputStream for the image.
-//			img = ImageIO.read(new FileInputStream("robot.png"));
-//
-//		} catch (IOException e) {
-//			System.out.println("The image was not loaded.");
-//
-//		}
-
 	}
-
+    /**
+     * Creates a hitbox that allows the program to check when it gets touched by other objects
+     *
+     * @return Returns a Rectangle at the position of the object that's also the size of the object
+     */
 	public Rectangle getBounds() {
 		return new Rectangle((int)x, (int)y, 50, 50);
 	}
-
+    /**
+     * Method which updates all the data of the class
+     */
 	public void tick() {
         if (HUD.HEALTH > 0) { //checks if the player is alive
             x += velX;
@@ -89,7 +94,9 @@ public class Player extends GameObject {
 		collision();
 
 	}
-
+    /**
+     * Uses the getBounds method to check if the object is being touched by other GameObjects
+     */
 	private void collision() {
 		for (int i = 0; i < handler.object.size(); i++) {
 
@@ -113,8 +120,12 @@ public class Player extends GameObject {
 
 
 		}
-	}// collision codeollision code
-
+	}
+    /**
+     * Draws the image of the class on the given instance of Graphics
+     *
+     * @param g Instance of Graphics originating from the Game class
+     */
 	@Override
 	public void render(SpriteBatch g) {
 		if (id == ID.Player) {

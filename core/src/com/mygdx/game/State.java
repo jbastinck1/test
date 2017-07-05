@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 /**
- * Created by Johan on 3-7-2017.
+ * Additional enum to allow the game to differentiate which state it is in
  */
 
 public enum State {

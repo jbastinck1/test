@@ -1,7 +1,7 @@
 package com.mygdx.game;
 
 /**
- * Created by Johan on 30-6-2017.
+ * Enum class which allows the program to differentiate between different types of GameObject
  */
 
 public enum ID {
