@@ -1,9 +1,12 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 
 import java.io.PrintStream;
 
@@ -16,6 +19,12 @@ public class Projectile extends GameObject {
     private Handler handler;
     private float velX;
     private float velY;
+    Sound laser = Gdx.audio.newSound(Gdx.files.internal("data/shoot.mp3"));
+    Sound robotdeath = Gdx.audio.newSound(Gdx.files.internal("data/robotdeath.mp3"));
+    Sound clank = Gdx.audio.newSound(Gdx.files.internal("data/clank.mp3"));
+    Sound explosion = Gdx.audio.newSound(Gdx.files.internal("data/explosion.mp3"));
+
+
     Spawn p;
 
     /**
@@ -33,6 +42,7 @@ public class Projectile extends GameObject {
         this.handler = handler;
         this.velX = velX;
         this.velY = velY;
+
     }
 
     /**
@@ -50,6 +60,7 @@ public class Projectile extends GameObject {
     public void tick() {
         x += velX;
         y += velY;
+
         if (y <= 0 || y >= 1080)
             handler.removeObject(this);
         if (x <= 0 || x >= 1980)
@@ -89,12 +100,14 @@ public class Projectile extends GameObject {
                     this.handler.removeObject(tempObject);
                     var10000 = this.p;
                     Spawn.scoreKeep += 50;
+                    robotdeath.play();
                     var3 = System.out;
                     var10001 = (new StringBuilder()).append("ScoreKeep");
                     var10002 = this.p;
                     var3.println(var10001.append(Spawn.scoreKeep).toString());
                 } else {
                     ++tempObject.Health;
+                    clank.play();
                     System.out.println(" Enemy has been Damaged");
                 }
             }
@@ -106,6 +119,7 @@ public class Projectile extends GameObject {
                         this.handler.removeObject(tempObject);
                         var10000 = this.p;
                         Spawn.scoreKeep += 10;
+                        explosion.play();
                     } else {
                         tempObject.Health = 0.0F;
                         System.out.println("Not possible...");
@@ -115,6 +129,7 @@ public class Projectile extends GameObject {
                 if (this.getBounds().overlaps(tempObject.getBounds()) && tempObject.Health == 0.0F) {
                     System.out.println("Healingenemy has been killed!");
                     this.handler.removeObject(tempObject);
+                    robotdeath.play();
                     HUD.HEALTH += 10;
                 }
             } else if (tempObject.getId() == ID.SmartEnemy && this.getBounds().overlaps(tempObject.getBounds())) {
@@ -124,11 +139,13 @@ public class Projectile extends GameObject {
                     var10000 = this.p;
                     Spawn.scoreKeep += 60;
                     var3 = System.out;
+                    robotdeath.play();
                     var10001 = (new StringBuilder()).append("Scorekeep");
                     var10002 = this.p;
                     var3.println(var10001.append(Spawn.scoreKeep).toString());
                 } else {
                     ++tempObject.Health;
+                    clank.play();
                     System.out.println(" Enemy has been Damaged");
                 }
             }

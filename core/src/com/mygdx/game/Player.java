@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,6 +14,9 @@ import com.badlogic.gdx.math.Rectangle;
 public class Player extends GameObject {
 	Handler handler;
     MyGdxGame game;
+    Sound hero = Gdx.audio.newSound(Gdx.files.internal("data/hero.mp3"));
+
+//	Game game;
     private Texture img = new Texture("robot.png");
     /**
      * Instantiate a new instance of player.
@@ -26,6 +31,15 @@ public class Player extends GameObject {
 		super(x, y, id);
 		this.handler = handler;
 		this.game = game;
+//		try {
+//			// Grab the InputStream for the image.
+//			img = ImageIO.read(new FileInputStream("robot.png"));
+//
+//		} catch (IOException e) {
+//			System.out.println("The image was not loaded.");
+//
+//		}
+
 	}
     /**
      * Creates a hitbox that allows the program to check when it gets touched by other objects
